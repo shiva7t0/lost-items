@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FindHome - Centralized Lost & Found Portal</title>
+  <meta name="description" content="The centralized, trusted community network connecting lost personal belongings with finders across campus, transit, and civic hubs.">
+  <meta name="keywords" content="lost and found, campus security, recover lost belongings, verified claim, smart matching">
+  
+  <!-- Modern Typography Fonts (Civic Return Spec) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= TOP DEMO PERSONA SWITCHER BAR ================= -->
+  <aside class="demo-bar" aria-label="Demo Persona Switcher">
+    <div class="demo-bar-inner">
+      <div class="demo-bar-label">
+        <span class="material-symbols-outlined text-[16px]">account_circle</span>
+        Active Demo Persona:
+      </div>
+      <div class="persona-pills">
+        <button type="button" class="persona-btn active" data-persona="rahul" id="personaRahul" title="Student who reported a lost ID card, MacBook, & Wallet">
+          <span class="persona-dot blue"></span>
+          Rahul Sharma (Lost Owner)
+        </button>
+        <button type="button" class="persona-btn" data-persona="priya" id="personaPriya" title="Campus Assistant who turned in found items">
+          <span class="persona-dot green"></span>
+          Priya Patel (Item Finder)
+        </button>
+        <button type="button" class="persona-btn" data-persona="admin" id="personaAdmin" title="Campus Security Desk Officer">
+          <span class="persona-dot amber"></span>
+          Officer Verma (Campus Security Desk)
+        </button>
+      </div>
+      <div class="demo-bar-actions">
+        <button type="button" class="btn-demo-tool" id="btnResetDemoData" title="Reset all listings to initial sample state">
+          <span class="material-symbols-outlined text-[14px]">restart_alt</span>
+          Reset Demo Data
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN HEADER & NAVIGATION ================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <!-- Brand Logo & Title -->
+      <div class="brand-group" id="navBrandLogo">
+        <svg class="brand-logo-img" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#1E293B"/>
+          <circle cx="16" cy="16" r="8" stroke="#82F5C1" stroke-width="2.5"/>
+          <path d="M12 16L15 19L20 13" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-title">FindHome</span>
+        <span class="brand-badge">Civic Return</span>
+      </div>
+
+      <!-- Main Navigation Links -->
+      <nav class="nav-links" aria-label="Main Navigation">
+        <button type="button" class="nav-item active" data-view="home" id="navHome">
+          <span class="material-symbols-outlined text-[18px]">home</span>
+          Home
+        </button>
+        <button type="button" class="nav-item" data-view="browse" id="navBrowse">
+          <span class="material-symbols-outlined text-[18px]">search</span>
+          Browse Items
+        </button>
+        <button type="button" class="nav-item" data-view="matches" id="navMatches">
+          <span class="material-symbols-outlined text-[18px]">insights</span>
+          Smart Matches
+          <span class="nav-badge-pill" id="navMatchesCount">1</span>
+        </button>
+        <button type="button" class="nav-item" data-view="dashboard" id="navDashboard">
+          <span class="material-symbols-outlined text-[18px]">dashboard</span>
+          Dashboard
+        </button>
+        <button type="button" class="nav-item" data-view="messages" id="navMessages">
+          <span class="material-symbols-outlined text-[18px]">chat</span>
+          Messages
+        </button>
+        <button type="button" class="nav-item" data-view="admin" id="navAdmin">
+          <span class="material-symbols-outlined text-[18px]">shield</span>
+          Admin Desk
+        </button>
+      </nav>
+
+      <!-- Right Header CTAs & Tools -->
+      <div class="header-actions">
+        <!-- Quick Action: Report Lost -->
+        <button type="button" class="btn-report-lost" id="btnHeaderReportLost" title="Report an item you lost">
+          <span class="material-symbols-outlined text-[18px]">add_circle</span>
+          <span>+ Report Lost</span>
+        </button>
+
+        <!-- Quick Action: Report Found -->
+        <button type="button" class="btn-report-found" id="btnHeaderReportFound" title="Report an item you found">
+          <span class="material-symbols-outlined text-[18px]">verified</span>
+          <span>+ Report Found</span>
+        </button>
+
+        <!-- Theme Toggle (Light / Dark) -->
+        <button type="button" class="theme-toggle-btn" id="btnThemeToggle" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <span class="material-symbols-outlined" id="themeToggleIcon">dark_mode</span>
+        </button>
+
+        <!-- Notification Bell -->
+        <div class="notification-wrap">
+          <button type="button" class="icon-btn" id="btnToggleNotifications" aria-label="Notifications" title="Notifications">
+            <span class="material-symbols-outlined">notifications</span>
+            <span class="notification-dot" id="notifBadge"></span>
+          </button>
+          
+          <!-- Dropdown Panel -->
+          <div class="dropdown-panel" id="notificationsDropdown">
+            <div class="dropdown-header">
+              <h4>Recent Activity & Alerts</h4>
+              <button type="button" class="btn-demo-tool" id="btnMarkAllNotifsRead">Mark read</button>
+            </div>
+            <div class="dropdown-list" id="notificationsList">
+              <!-- Populated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Pill -->
+        <div class="user-profile-badge" id="btnProfileMenu" title="Click to view user profile details">
+          <div class="user-avatar-circle" id="currentUserAvatar">R</div>
+          <span class="user-meta-name" id="currentUserName">Rahul S.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="app-main" id="appMainContent">
+
+    <!-- ================= VIEW 1: HOME PAGE (STITCH SCREEN 1) ================= -->
+    <section class="view-section active" id="viewHome">
+      <!-- Immersive Civic Hero Section -->
+      <div class="hero-civic-wrap">
+        <div class="hero-glow-1"></div>
+        <div class="hero-glow-2"></div>
+        <div class="hero-glow-3"></div>
+
+        <div class="hero-content-inner">
+          <!-- Civic Announcement Pill -->
+          <div class="civic-announcement-pill">
+            <span class="pulse-emerald-dot"></span>
+            <span>Campus &amp; District Municipal Network Connected</span>
+            <span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+          </div>
+
+          <!-- Headline & Subtitle -->
+          <h1 class="hero-headline">
+            Lost Something? Found Something?
+            <span class="hero-gradient-text">Help It Find Its Way Home.</span>
+          </h1>
+          <p class="hero-subheadline">
+            The centralized, trusted community network connecting lost personal belongings with finders across campus, transit, and civic hubs.
+          </p>
+
+          <!-- Dual Primary CTAs -->
+          <div class="hero-dual-ctas">
+            <button type="button" class="hero-cta-btn lost" id="btnHeroReportLost">
+              <span class="material-symbols-outlined text-[24px]">search_check</span>
+              <span>Report Lost Item</span>
+              <span class="cta-tag-badge">Active Alert</span>
+            </button>
+            <button type="button" class="hero-cta-btn found" id="btnHeroReportFound">
+              <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+              <span>Report Found Item</span>
+              <span class="cta-tag-badge">Safe Drop</span>
+            </button>
+          </div>
+
+          <!-- Universal Search Console -->
+          <div class="universal-search-console">
+            <form class="search-console-grid" id="heroSearchForm" onsubmit="event.preventDefault(); window.portalApp.handleHeroSearch();">
+              <!-- Query Input -->
+              <div class="console-input-wrap">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" class="console-input" id="heroSearchInput" placeholder="Search wallets, keys, MacBook, ID cards...">
+              </div>
+
+              <!-- Category Dropdown -->
+              <div class="console-input-wrap">
+                <span class="material-symbols-outlined">category</span>
+                <select class="console-select" id="heroCategorySelect" aria-label="Select Category">
+                  <option value="ALL">All Categories</option>
+                  <option value="Wallets">Wallets &amp; Bags</option>
+                  <option value="Laptops">Laptops &amp; Tech</option>
+                  <option value="ID Cards">Student / Gov IDs</option>
+                  <option value="Earphones/Headphones">Headphones &amp; Audio</option>
+                  <option value="Keys">Keys &amp; Badges</option>
+                  <option value="Watches">Watches &amp; Wearables</option>
+                </select>
+                <span class="material-symbols-outlined console-select-arrow">expand_more</span>
+              </div>
+
+              <!-- Location Input -->
+              <div class="console-input-wrap">
+                <span class="material-symbols-outlined">location_on</span>
+                <input type="text" class="console-input" id="heroLocationInput" placeholder="Campus, Library, Canteen...">
+              </div>
+
+              <!-- Action Button -->
+              <button type="submit" class="btn-console-submit" id="btnHeroSubmitSearch">
+                <span class="material-symbols-outlined text-[18px]">manage_search</span>
+                <span>Matches</span>
+              </button>
+            </form>
+
+            <!-- Trending Suggestions Bar -->
+            <div class="search-trend-tags">
+              <span class="trend-label">Common Searches:</span>
+              <button type="button" class="trend-pill" onclick="window.portalApp.quickFillHeroSearch('MacBook Air')">MacBook Air</button>
+              <button type="button" class="trend-pill" onclick="window.portalApp.quickFillHeroSearch('Student ID')">Student IDs</button>
+              <button type="button" class="trend-pill" onclick="window.portalApp.quickFillHeroSearch('Leather Wallet')">Cardholder</button>
+              <button type="button" class="trend-pill" onclick="window.portalApp.quickFillHeroSearch('Sony WH-1000XM4')">Sony Headphones</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Metrics / Civic Impact Ribbon -->
+      <section class="impact-metrics-ribbon">
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-value-row">
+              <span class="metric-num emerald">1,840+</span>
+              <span class="material-symbols-outlined text-secondary text-[24px]">task_alt</span>
+            </div>
+            <span class="metric-label">Items Reunited</span>
+            <span class="metric-sub">Validated through safe transfer</span>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-value-row">
+              <span class="metric-num">94%</span>
+              <span class="material-symbols-outlined text-secondary text-[24px]">verified</span>
+            </div>
+            <span class="metric-label">Verified Return Rate</span>
+            <span class="metric-sub">Higher than civic average</span>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-value-row">
+              <span class="metric-num amber">&lt; 24h</span>
+              <span class="material-symbols-outlined text-tertiary text-[24px]">speed</span>
+            </div>
+            <span class="metric-label">Average Match Time</span>
+            <span class="metric-sub">Multi-vector AI correlation</span>
+          </div>
+
+          <div class="metric-item">
+            <div class="metric-value-row">
+              <span class="metric-num">12,000+</span>
+              <span class="material-symbols-outlined text-[24px]">groups</span>
+            </div>
+            <span class="metric-label">Community Members</span>
+            <span class="metric-sub">Across university &amp; transit hub</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Recent Listings Section -->
+      <section class="section-container">
+        <div class="feed-header-row">
+          <div class="feed-header-title">
+            <div class="inline-flex items-center gap-1 text-secondary font-semibold text-sm mb-1">
+              <span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Real-Time Civic Register
+            </div>
+            <h2>Recent Community Listings</h2>
+            <p>Review newly cataloged items or cross-verify ownership records</p>
+          </div>
+
+          <!-- Segmented Filter Control -->
+          <div class="feed-tab-switcher">
+            <button type="button" class="feed-tab-btn active" data-feed-filter="ALL" id="tabFeedAll">All Recent</button>
+            <button type="button" class="feed-tab-btn" data-feed-filter="LOST" id="tabFeedLost">Lost Items (3)</button>
+            <button type="button" class="feed-tab-btn" data-feed-filter="FOUND" id="tabFeedFound">Found Items (4)</button>
+          </div>
+        </div>
+
+        <!-- 4 Core Listings Grid -->
+        <div class="cards-grid-4" id="homeListingsGrid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Discovery Callout Banner -->
+        <div class="discovery-callout-banner">
+          <div class="callout-left">
+            <div class="callout-icon-box">
+              <span class="material-symbols-outlined text-[28px]">radar</span>
+            </div>
+            <div>
+              <h4 class="callout-title">Can't spot your item in the recent feed?</h4>
+              <p class="callout-desc">Over 400 active items are archived in the campus public safety network.</p>
+            </div>
+          </div>
+          <button type="button" class="btn-callout-browse" id="btnHeroFullCatalog">
+            <span>Search Full Catalog</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Bento 3-Step Lifecycle Section -->
+      <section class="lifecycle-section-wrap">
+        <div class="lifecycle-header">
+          <span class="lifecycle-tag">Simple &amp; Protected Protocol</span>
+          <h2>How FindHome Reunites Belongings</h2>
+          <p>Built with campus public safety standards to protect privacy, eliminate fraudulent claims, and ensure swift return.</p>
+        </div>
+
+        <div class="bento-steps-grid">
+          <!-- Step 1 -->
+          <div class="bento-step-card">
+            <div>
+              <div class="flex items-center justify-between">
+                <div class="bento-num-badge">01</div>
+                <span class="material-symbols-outlined text-[24px]">edit_note</span>
+              </div>
+              <h3 class="bento-step-title">Report in 60 Seconds</h3>
+              <p class="bento-step-desc">
+                Post lost or found items with photos, distinguishing notes, dates, and geo-tagged campus coordinates. Direct drop to official custody is supported.
+              </p>
+            </div>
+            <div class="bento-footer-check">
+              <span class="material-symbols-outlined text-[18px]">check_circle</span>
+              <span>Takes under one minute</span>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bento-step-card">
+            <div>
+              <div class="flex items-center justify-between">
+                <div class="bento-num-badge">02</div>
+                <span class="material-symbols-outlined text-[24px]">auto_awesome</span>
+              </div>
+              <h3 class="bento-step-title">Smart AI Matching</h3>
+              <p class="bento-step-desc">
+                Our multi-modal matching algorithm cross-references visual features, timestamps, descriptions, and serial hashes to pair entries instantaneously.
+              </p>
+            </div>
+            <div class="bento-footer-check">
+              <span class="material-symbols-outlined text-[18px]">speed</span>
+              <span>Automated alert notifications</span>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bento-step-card">
+            <div>
+              <div class="flex items-center justify-between">
+                <div class="bento-num-badge">03</div>
+                <span class="material-symbols-outlined text-[24px]">encrypted</span>
+              </div>
+              <h3 class="bento-step-title">Safe &amp; Private Claim</h3>
+              <p class="bento-step-desc">
+                Answer masked anti-fraud ownership questions (e.g., lock-screen wallpaper, serial digit). Chat in an encrypted thread and meet at verified civic desks.
+              </p>
+            </div>
+            <div class="bento-footer-check">
+              <span class="material-symbols-outlined text-[18px]">shield_lock</span>
+              <span>Zero personal data exposed</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Civic Safe Handover Infrastructure Banner -->
+      <section class="handover-banner-wrap">
+        <div class="handover-left">
+          <div class="inline-flex items-center gap-1 text-secondary font-semibold text-sm">
+            <span class="material-symbols-outlined text-[18px]">location_city</span>
+            Civic Safe Handover Infrastructure
+          </div>
+          <h2>Need an officially monitored spot to hand over an item?</h2>
+          <p class="text-on-surface-variant text-base">
+            Never risk private meetups in secluded areas. FindHome partners with campus security desks, municipal transit units, and central library counters staffed 24/7.
+          </p>
+
+          <div class="handover-features-list">
+            <div class="handover-feat-row">
+              <span class="material-symbols-outlined">videocam</span>
+              <span>CCTV monitored designated handoff desks</span>
+            </div>
+            <div class="handover-feat-row">
+              <span class="material-symbols-outlined">inventory</span>
+              <span>Secure locker drop option for after-hours recovery</span>
+            </div>
+            <div class="handover-feat-row">
+              <span class="material-symbols-outlined">verified_user</span>
+              <span>Staff identity verification receipt upon release</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn-primary" id="btnViewSafeExchange">
+            <span class="material-symbols-outlined text-[18px]">map</span>
+            <span>View Safe Exchange Locations</span>
+          </button>
+        </div>
+
+        <div class="handover-right-map">
+          <div class="handover-map-card">
+            <div>
+              <strong class="text-primary font-bold block text-sm">Main Campus Public Safety Desk</strong>
+              <small class="text-on-surface-variant text-xs">Ground Floor, Administration Hall · Open 24/7</small>
+            </div>
+            <span class="card-badge-status found" style="position: static;">Active Node</span>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ================= VIEW 2: BROWSE LISTINGS (STITCH SCREEN 2) ================= -->
+    <section class="view-section" id="viewBrowse">
+      <div class="section-container">
+        <!-- Top Query Intake Bar -->
+        <div class="browse-top-bar" style="margin-bottom: 24px;">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-xl font-bold text-primary">Browse All Community Listings</h1>
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-xs font-semibold" id="browseCountBadge">7 Items Cataloged</span>
+          </div>
+
+          <div class="browse-sort-wrap">
+            <span>Sort by:</span>
+            <select class="browse-sort-select" id="browseSortSelect">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="confidence">Highest Confidence</option>
+              <option value="title">Item Name (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="browse-page-layout">
+          <!-- Left 280px Filter Sidebar -->
+          <aside class="browse-sidebar">
+            <div class="sidebar-header">
+              <h3>Filter Catalog</h3>
+              <button type="button" class="btn-demo-tool" id="btnResetAllFilters">Reset</button>
+            </div>
+
+            <!-- 1. Classification (All / Lost / Found) -->
+            <div>
+              <span class="filter-group-title">Listing Classification</span>
+              <div class="type-segmented-control">
+                <button type="button" class="segment-btn active" data-browse-type="ALL" id="browseTypeAll">All</button>
+                <button type="button" class="segment-btn" data-browse-type="LOST" id="browseTypeLost">Lost</button>
+                <button type="button" class="segment-btn" data-browse-type="FOUND" id="browseTypeFound">Found</button>
+              </div>
+            </div>
+
+            <!-- 2. Keyword Search -->
+            <div>
+              <label class="filter-group-title" for="browseSearchKeyword">Keyword or Model</label>
+              <div class="console-input-wrap">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+                <input type="text" class="console-input" id="browseSearchKeyword" placeholder="e.g. MacBook, Wallet, ID...">
+              </div>
+            </div>
+
+            <!-- 3. Category Checklist -->
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="filter-group-title" style="margin-bottom: 0;">Categories</span>
+                <small class="text-outline text-xs" id="categoryCheckCount">All Active</small>
+              </div>
+              <div class="categories-checklist" id="browseCategoryChecklist">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
+            <!-- 4. Location Zone Filter -->
+            <div>
+              <label class="filter-group-title" for="browseLocationFilter">Campus Area / District</label>
+              <div class="console-input-wrap">
+                <span class="material-symbols-outlined text-[18px]">location_on</span>
+                <input type="text" class="console-input" id="browseLocationFilter" placeholder="e.g. Library, Canteen, Gym...">
+              </div>
+            </div>
+
+            <!-- 5. Status Filter -->
+            <div>
+              <label class="filter-group-title" for="browseStatusFilter">Item Resolution Status</label>
+              <select class="console-select" id="browseStatusFilter">
+                <option value="ALL">All Listings</option>
+                <option value="ACTIVE_ONLY" selected>Active / Unclaimed Only</option>
+                <option value="RECOVERED_ONLY">Recovered / Returned</option>
+              </select>
+            </div>
+          </aside>
+
+          <!-- Right Grid Column -->
+          <div class="browse-main-col">
+            <div class="cards-grid-4" id="browseItemsGrid" style="grid-template-columns: repeat(3, 1fr);">
+              <!-- Item Cards Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: ITEM DETAILS & CLAIM VERIFICATION (STITCH SCREEN 3) ================= -->
+    <section class="view-section" id="viewItemDetail">
+      <div class="section-container">
+        <!-- Breadcrumbs Navigation -->
+        <div class="flex items-center justify-between gap-2 mb-6 text-sm text-on-surface-variant flex-wrap">
+          <div class="flex items-center gap-1.5 font-medium">
+            <button type="button" class="hover:text-primary" onclick="window.portalApp.navigateTo('home')">Home</button>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <button type="button" class="hover:text-primary" onclick="window.portalApp.navigateTo('browse')">Browse Listings</button>
+            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+            <span class="font-bold text-primary truncate max-w-sm" id="detailBreadcrumbTitle">Item Details</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="card-badge-status found" style="position: static;">
+              <span class="dot"></span>
+              Public Ledger Active
+            </span>
+            <button type="button" class="btn-demo-tool" id="btnShareListing" title="Share listing link">
+              <span class="material-symbols-outlined text-[16px]">share</span>
+              Share
+            </button>
+          </div>
+        </div>
+
+        <!-- 60/40 Master Split Layout -->
+        <div class="details-split-grid">
+          <!-- Left Column (60%): Showcase & Attributes -->
+          <div class="details-showcase-panel">
+            <!-- 16:10 Main Image Viewport -->
+            <div class="details-main-img-wrap">
+              <img id="detailMainImage" src="assets/images/wallet.jpg" alt="Item Preview">
+              <div class="card-badge-status found" id="detailStatusBadge" style="top: 14px; left: 14px;">
+                <span class="dot"></span>
+                <span id="detailStatusText">FOUND ITEM</span>
+              </div>
+              <div class="details-masked-banner">
+                <span class="flex items-center gap-1.5 truncate">
+                  <span class="material-symbols-outlined text-[16px] text-tertiary">visibility_off</span>
+                  <span>Cardholder IDs &amp; sensitive markings masked for public safety</span>
+                </span>
+                <span class="font-bold text-xs uppercase">PRD §6.8</span>
+              </div>
+            </div>
+
+            <!-- Thumbnail Selector -->
+            <div class="gallery-thumbs-row" id="detailGalleryThumbs">
+              <!-- Thumbnails generated by JS -->
+            </div>
+
+            <!-- Case Record & Header -->
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <small class="font-bold uppercase text-xs tracking-wider text-outline" id="detailCaseRecord">CASE RECORD #FD-8942</small>
+                <span class="text-outline">•</span>
+                <span class="text-xs font-semibold text-secondary">Civic Verification Level 2</span>
+              </div>
+              <h1 class="text-2xl font-bold text-primary" id="detailTitle">Black Leather Bi-Fold Wallet</h1>
+            </div>
+
+            <!-- Metadata Pill Grid -->
+            <div class="metadata-pills-row">
+              <div class="meta-pill-box">
+                <span class="meta-pill-label">
+                  <span class="material-symbols-outlined text-[14px]">category</span>
+                  Category
+                </span>
+                <strong class="meta-pill-val" id="detailCategory">Wallets</strong>
+              </div>
+              <div class="meta-pill-box">
+                <span class="meta-pill-label">
+                  <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                  Date Logged
+                </span>
+                <strong class="meta-pill-val" id="detailDate">Oct 03, 2026</strong>
+              </div>
+              <div class="meta-pill-box">
+                <span class="meta-pill-label">
+                  <span class="material-symbols-outlined text-[14px]">location_on</span>
+                  Exact Zone
+                </span>
+                <strong class="meta-pill-val" id="detailLocation">Library 2nd Floor</strong>
+              </div>
+              <div class="meta-pill-box">
+                <span class="meta-pill-label">
+                  <span class="material-symbols-outlined text-[14px]">badge</span>
+                  Custodian
+                </span>
+                <strong class="meta-pill-val text-secondary" id="detailCustodian">Campus Desk</strong>
+              </div>
+            </div>
+
+            <!-- Public Description -->
+            <div>
+              <h3 class="font-bold text-base text-primary mb-1">Public Description</h3>
+              <p class="text-on-surface-variant leading-relaxed text-sm" id="detailDescription">
+                Item description will be shown here.
+              </p>
+            </div>
+
+            <!-- Location Context Box -->
+            <div class="zero-knowledge-callout">
+              <span class="material-symbols-outlined text-secondary text-[24px]">near_me</span>
+              <div>
+                <strong class="text-primary font-bold block text-sm" id="detailLocationHeader">Campus Security Node</strong>
+                <p class="text-on-surface-variant text-xs">
+                  Physical custody registered under Security Custody Ticket #LOC-289. Vault transfer authenticated with campus safety log.
+                </p>
+              </div>
+            </div>
+
+            <!-- Zero-Knowledge Disclosure Policy Notice -->
+            <div class="zero-knowledge-callout">
+              <span class="material-symbols-outlined text-primary text-[24px]">shield</span>
+              <div>
+                <h4>Zero-Knowledge Ownership Protocol</h4>
+                <p>
+                  Sensitive identifying details (such as interior cards, full serial digits, or private contents) are intentionally held confidential to prevent false claims. Claimants must prove ownership via the challenge form.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column (40%): Ownership Claim Panel -->
+          <div class="claim-panel-card">
+            <div class="claim-panel-header">
+              <span class="protocol-badge">
+                <span class="material-symbols-outlined text-[14px]">gavel</span>
+                PRD Section 21 Protocol
+              </span>
+              <h3 id="claimPanelTitle">Claim This Item</h3>
+              <p class="text-on-surface-variant text-xs">
+                Complete the verification challenge questions below. Your answers will be securely cross-checked with the physical asset log.
+              </p>
+            </div>
+
+            <!-- Security Note -->
+            <div class="p-3 rounded-lg bg-surface-low text-xs text-on-surface-variant leading-relaxed">
+              <span class="font-semibold text-primary">Identity Shield Active:</span> Answers are audited by Campus Security. False claims violate campus conduct policies.
+            </div>
+
+            <!-- Claim Challenge Form -->
+            <form class="flex flex-col gap-4" id="ownershipClaimForm" onsubmit="event.preventDefault(); window.portalApp.submitClaimVerification();">
+              <div class="claim-form-group">
+                <label for="claimBrandInput">
+                  <span>1. Brand or embossed logo on the item?</span>
+                  <span class="text-error text-xs">*Required</span>
+                </label>
+                <input type="text" class="claim-form-input" id="claimBrandInput" placeholder="e.g. Bellroy, Apple, Titan, Nike..." required>
+              </div>
+
+              <div class="claim-form-group">
+                <label for="claimContentsInput">
+                  <span>2. Describe 2 specific contents or markings inside:</span>
+                  <span class="text-error text-xs">*Required</span>
+                </label>
+                <textarea class="claim-form-textarea" id="claimContentsInput" rows="3" placeholder="e.g. Student ID number suffix, specific sticker on back, color of interior lining..." required></textarea>
+              </div>
+
+              <div class="claim-form-group">
+                <label for="claimScratchInput">
+                  <span>3. Any unique scratch, defect, or identifier?</span>
+                </label>
+                <input type="text" class="claim-form-input" id="claimScratchInput" placeholder="e.g. Tiny scratch on front fold, custom engraving...">
+              </div>
+
+              <div class="claim-form-group">
+                <label for="claimDateLost">
+                  <span>4. Approximate date &amp; time lost:</span>
+                  <span class="text-error text-xs">*Required</span>
+                </label>
+                <input type="datetime-local" class="claim-form-input" id="claimDateLost" required>
+              </div>
+
+              <div class="claim-form-group">
+                <label>
+                  <span>5. Proof receipt or photo proof (Optional)</span>
+                  <span class="text-outline text-xs">Max 10MB</span>
+                </label>
+                <div class="claim-dropzone" onclick="document.getElementById('claimFileInput').click()">
+                  <span class="material-symbols-outlined text-[24px] text-secondary">cloud_upload</span>
+                  <p class="text-xs font-semibold text-primary mt-1">Click to attach photo or receipt</p>
+                  <input type="file" id="claimFileInput" class="hidden" accept="image/*,.pdf" style="display: none;" onchange="window.portalApp.handleProofUpload(event)">
+                  <span id="claimFileName" class="text-xs text-secondary mt-1 block"></span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-claim" id="btnSubmitClaimForm">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span>Submit Claim for Verification</span>
+              </button>
+
+              <div class="flex items-center gap-2 pt-1">
+                <button type="button" class="btn-secondary w-full" id="btnSaveWatchlist">
+                  <span class="material-symbols-outlined text-[16px]">bookmark</span>
+                  Save
+                </button>
+                <button type="button" class="btn-secondary w-full" id="btnMessageCustodian">
+                  <span class="material-symbols-outlined text-[16px]">chat</span>
+                  Message Finder
+                </button>
+              </div>
+            </form>
+
+            <!-- Safe Handover Hubs Box -->
+            <div class="pt-3 border-t border-border-light text-xs space-y-2">
+              <span class="font-bold text-primary block uppercase tracking-wider">Official Safe Handover Hub:</span>
+              <div class="p-2.5 rounded-lg bg-surface-low flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-secondary text-[20px]">local_police</span>
+                <div>
+                  <strong class="block text-primary">Campus Security Kiosk</strong>
+                  <span class="text-outline text-xs">Administration Hall North · Open 24/7 with CCTV</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: USER DASHBOARD & SMART MATCH CENTER (STITCH SCREEN 4) ================= -->
+    <section class="view-section" id="viewDashboard">
+      <div class="section-container">
+        <!-- Greeting Banner -->
+        <div class="dashboard-welcome-banner">
+          <div>
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <h1 class="text-2xl font-bold text-primary" id="dashGreetingName">Welcome back, Rahul!</h1>
+              <span class="card-badge-status found" style="position: static;">
+                <span class="dot"></span>
+                Verified Campus ID
+              </span>
+            </div>
+            <p class="text-on-surface-variant text-sm">
+              Automated visual &amp; metadata verification running. You have <strong class="text-secondary" id="dashMatchesHighlight">3 prospective item matches</strong> ready for review.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" class="btn-report-lost" onclick="window.portalApp.openReportModal('LOST')">+ Report Lost</button>
+            <button type="button" class="btn-report-found" onclick="window.portalApp.openReportModal('FOUND')">+ Report Found</button>
+          </div>
+        </div>
+
+        <!-- 4 KPI Metrics -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div>
+              <span class="text-xs uppercase font-bold text-outline">My Active Reports</span>
+              <div class="kpi-card-num" id="kpiActiveReports">02</div>
+              <small class="text-xs text-on-surface-variant" id="kpiActiveBreakdown">1 Lost / 1 Found</small>
+            </div>
+            <div class="kpi-card-icon">
+              <span class="material-symbols-outlined text-[24px]">folder_open</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <span class="text-xs uppercase font-bold text-outline">Potential Matches</span>
+              <div class="kpi-card-num emerald" id="kpiMatchesCount">03</div>
+              <small class="text-xs text-secondary font-semibold">80%+ Confidence Score</small>
+            </div>
+            <div class="kpi-card-icon">
+              <span class="material-symbols-outlined text-[24px] text-secondary">grain</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <span class="text-xs uppercase font-bold text-outline">Pending Claims</span>
+              <div class="kpi-card-num" id="kpiPendingClaims">01</div>
+              <small class="text-xs text-tertiary">Reviewing submitted proof</small>
+            </div>
+            <div class="kpi-card-icon">
+              <span class="material-symbols-outlined text-[24px]">assignment_turned_in</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <span class="text-xs uppercase font-bold text-outline">Reunited Items</span>
+              <div class="kpi-card-num" id="kpiReunitedCount">04</div>
+              <small class="text-xs text-secondary font-semibold">100% Handover Recorded</small>
+            </div>
+            <div class="kpi-card-icon">
+              <span class="material-symbols-outlined text-[24px]">diversity_3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Sub-Tabs -->
+        <div class="feed-tab-switcher mb-6" style="margin-bottom: 24px;">
+          <button type="button" class="feed-tab-btn active" data-dash-tab="matches" id="tabDashMatches">
+            <span class="material-symbols-outlined text-[16px]">insights</span>
+            Smart Match Center &amp; Alerts
+          </button>
+          <button type="button" class="feed-tab-btn" data-dash-tab="reports" id="tabDashReports">
+            <span class="material-symbols-outlined text-[16px]">list_alt</span>
+            All My Reports (<span id="dashReportsCount">2</span>)
+          </button>
+          <button type="button" class="feed-tab-btn" data-dash-tab="claims" id="tabDashClaims">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            Claims Log &amp; Received
+          </button>
+        </div>
+
+        <!-- SUB-TAB 1: High Confidence Match Showcase Card -->
+        <div id="dashTabContentMatches">
+          <div class="match-showcase-card" id="matchShowcaseContainer">
+            <!-- Populated via JS with 88% Match Showcase -->
+          </div>
+        </div>
+
+        <!-- SUB-TAB 2: My Reports List -->
+        <div id="dashTabContentReports" style="display: none;">
+          <div class="bg-surface-lowest p-6 rounded-xl border border-border-light shadow-sm">
+            <h3 class="text-lg font-bold text-primary mb-4">My Submitted Listings</h3>
+            <div class="space-y-4" id="myReportsList">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 3: Claims Log & Received -->
+        <div id="dashTabContentClaims" style="display: none;">
+          <div class="bg-surface-lowest p-6 rounded-xl border border-border-light shadow-sm">
+            <h3 class="text-lg font-bold text-primary mb-4">Verification Claims &amp; Audits</h3>
+            <div class="space-y-4" id="myClaimsList">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: SMART MATCHES DEDICATED MATRIX ================= -->
+    <section class="view-section" id="viewMatches">
+      <div class="section-container">
+        <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-bold text-primary">AI Smart Match Center</h1>
+            <p class="text-on-surface-variant text-sm">
+              Multi-vector correlation engine comparing reported lost items with found inventory.
+            </p>
+          </div>
+          <span class="card-badge-status found" style="position: static;">Engine Active | Node #14</span>
+        </div>
+
+        <div class="space-y-6" id="dedicatedMatchesList">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 6: MESSAGES & DIRECT CHAT ================= -->
+    <section class="view-section" id="viewMessages">
+      <div class="section-container">
+        <div class="bg-surface-lowest rounded-xl border border-border-light shadow-sm overflow-hidden" style="min-height: 540px; display: grid; grid-template-columns: 320px 1fr;">
+          <!-- Contacts Sidebar -->
+          <div class="border-r border-border-light bg-surface-low p-4 flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-primary mb-3">Custody Communications</h3>
+              <div class="space-y-2" id="chatContactsList">
+                <!-- Contacts populated by JS -->
+              </div>
+            </div>
+            <div class="p-3 rounded-lg bg-surface-lowest border border-border-light text-xs text-on-surface-variant">
+              <span class="font-bold block text-primary mb-1">Encrypted In-App Chat</span>
+              Personal mobile numbers are masked for mutual safety until release.
+            </div>
+          </div>
+
+          <!-- Chat Thread -->
+          <div class="p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-border-light mb-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="user-avatar-circle" id="chatHeaderAvatar">P</div>
+                  <div>
+                    <strong class="text-sm font-bold block" id="chatHeaderName">Priya Patel (Finder)</strong>
+                    <small class="text-xs text-secondary">Regarding: College Student ID Card</small>
+                  </div>
+                </div>
+                <button type="button" class="btn-demo-tool" id="btnScheduleHandoff">Schedule Meetup</button>
+              </div>
+
+              <!-- Message Bubbles -->
+              <div class="space-y-3" id="chatMessagesContainer" style="max-height: 340px; overflow-y: auto;">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- Send Input -->
+            <form class="flex items-center gap-2 mt-4 pt-3 border-t border-border-light" id="chatSendForm" onsubmit="event.preventDefault(); window.portalApp.sendChatMessage();">
+              <input type="text" class="console-input" id="chatInputText" placeholder="Type a message to arrange safe collection..." required>
+              <button type="submit" class="btn-primary" style="padding: 11px 20px;">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 7: ADMIN & MODERATION DESK ================= -->
+    <section class="view-section" id="viewAdmin">
+      <div class="section-container">
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-primary">Campus Security Moderation Desk</h1>
+            <p class="text-on-surface-variant text-sm">Review reported disputes, verify vault deposits, and confirm owner handovers.</p>
+          </div>
+          <span class="card-badge-status found" style="position: static;">Officer Verma Active</span>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-surface-lowest p-6 rounded-xl border border-border-light shadow-sm">
+            <h3 class="text-lg font-bold text-primary mb-3">Custody Locker Vault Records</h3>
+            <div class="overflow-x-auto">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;" id="adminVaultTable">
+                <thead>
+                  <tr style="text-align: left; border-bottom: 2px solid var(--border-light); color: var(--outline);">
+                    <th style="padding: 10px;">Ticket #</th>
+                    <th style="padding: 10px;">Item Name</th>
+                    <th style="padding: 10px;">Custodian</th>
+                    <th style="padding: 10px;">Location Found</th>
+                    <th style="padding: 10px;">Vault Status</th>
+                    <th style="padding: 10px;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminVaultTableBody">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MULTI-STEP REPORT MODAL (LOST OR FOUND) ================= -->
+  <div class="modal-overlay" id="reportModalOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="reportModalTitle">Report an Item</h3>
+        <button type="button" class="btn-demo-tool" onclick="window.portalApp.closeReportModal()">✕</button>
+      </div>
+
+      <form id="reportItemWizardForm" onsubmit="event.preventDefault(); window.portalApp.submitNewItemReport();">
+        <div class="modal-body">
+          <!-- Step 1: Listing Type Switcher -->
+          <div class="claim-form-group">
+            <label>Item Classification</label>
+            <div class="type-segmented-control">
+              <button type="button" class="segment-btn active" id="modalTypeLost" onclick="window.portalApp.setModalType('LOST')">🚨 Lost Item</button>
+              <button type="button" class="segment-btn" id="modalTypeFound" onclick="window.portalApp.setModalType('FOUND')">🙌 Found Item</button>
+            </div>
+          </div>
+
+          <!-- Title & Category -->
+          <div class="claim-form-group">
+            <label for="modalItemTitle">Item Title / Model *</label>
+            <input type="text" class="claim-form-input" id="modalItemTitle" placeholder="e.g. Black Leather Cardholder, AirPods Pro..." required>
+          </div>
+
+          <div class="claim-form-group">
+            <label for="modalItemCategory">Item Category *</label>
+            <select class="claim-form-input" id="modalItemCategory" required>
+              <option value="Wallets">Wallets &amp; Bags</option>
+              <option value="Laptops">Laptops &amp; Computers</option>
+              <option value="ID Cards">College / Student IDs</option>
+              <option value="Earphones/Headphones">Earphones &amp; Audio</option>
+              <option value="Keys">Keys &amp; Keychains</option>
+              <option value="Watches">Watches &amp; Wearables</option>
+              <option value="Mobile Phones">Mobile Phones</option>
+              <option value="Other">Other Personal Belonging</option>
+            </select>
+          </div>
+
+          <!-- Description -->
+          <div class="claim-form-group">
+            <label for="modalItemDesc">Public Description *</label>
+            <textarea class="claim-form-textarea" id="modalItemDesc" rows="3" placeholder="Describe visual appearance, color, brand, condition..." required></textarea>
+          </div>
+
+          <!-- Confidential Distinguishing Mark (Anti-Fraud) -->
+          <div class="claim-form-group">
+            <label for="modalItemSecret">
+              <span>Confidential Distinguishing Identifier *</span>
+              <small class="text-secondary font-semibold">Kept secret for ownership validation</small>
+            </label>
+            <input type="text" class="claim-form-input" id="modalItemSecret" placeholder="e.g. Serial ends in 42, custom initial scratch on buckle..." required>
+          </div>
+
+          <!-- Campus Location & Date -->
+          <div class="grid grid-cols-2 gap-4">
+            <div class="claim-form-group">
+              <label for="modalItemLocation">Campus Area / Location *</label>
+              <input type="text" class="claim-form-input" id="modalItemLocation" placeholder="e.g. Library 2nd Floor, Canteen..." required>
+            </div>
+            <div class="claim-form-group">
+              <label for="modalItemDate">Date Occurred *</label>
+              <input type="date" class="claim-form-input" id="modalItemDate" required>
+            </div>
+          </div>
+
+          <!-- Preset Photo Selector or Upload -->
+          <div class="claim-form-group">
+            <label>Item Photograph</label>
+            <div class="flex items-center gap-2 overflow-x-auto pb-2" id="modalPresetPhotos">
+              <!-- Preset thumbnail options populated by JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="window.portalApp.closeReportModal()">Cancel</button>
+          <button type="submit" class="btn-primary" id="btnSubmitNewListing">Publish Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= APPLICATION FOOTER ================= -->
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h4>FindHome</h4>
+        <p>The trusted civic recovery network uniting students, faculty, and municipal visitors with misplaced personal items.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="#" onclick="window.portalApp.navigateTo('home')">Home Register</a></li>
+          <li><a href="#" onclick="window.portalApp.navigateTo('browse')">Browse Listings</a></li>
+          <li><a href="#" onclick="window.portalApp.navigateTo('matches')">Smart AI Matches</a></li>
+          <li><a href="#" onclick="window.portalApp.navigateTo('dashboard')">User Dashboard</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Campus Safety</h5>
+        <ul>
+          <li><a href="#">Public Safety Kiosk (Admin Hall)</a></li>
+          <li><a href="#">24/7 Security Hotline: (555) 019-4921</a></li>
+          <li><a href="#">Zero-Knowledge Disclosure Policy</a></li>
+          <li><a href="#">Report Lost Item Protocol</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Civic System</h5>
+        <ul>
+          <li><a href="#">Design System: Civic Return</a></li>
+          <li><a href="#">Anti-Fraud Ownership Verification</a></li>
+          <li><a href="#">Decentralized Custody Nodes</a></li>
+          <li><a href="#">Status: All Systems Operational</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 FindHome Portal. All rights reserved.</span>
+      <span>Empowered by Google DeepMind Advanced Agentic Systems</span>
+    </div>
+  </footer>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
